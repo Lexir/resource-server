@@ -1,6 +1,7 @@
 package dev.salex.resourceserver.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,8 +24,9 @@ import java.util.Map;
 
 public class CustomRemoteTokenService implements ResourceServerTokenServices {
 
+    @Value("${oauth.server.domain}")
+    private String oauth_server;
     private RestOperations restTemplate;
-
     private AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
 
     @Autowired
@@ -44,7 +46,7 @@ public class CustomRemoteTokenService implements ResourceServerTokenServices {
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
         HttpHeaders headers = new HttpHeaders();
-        Map<String, Object> map = executeGet("https://id.trusted.plus/idp/sso/oauth/check_token?token=" + accessToken, headers);
+        Map<String, Object> map = executeGet(buildCheckTokenUrl(accessToken), headers);
         if (map == null || map.isEmpty() || map.get("error") != null) {
             throw new InvalidTokenException("Token not allowed");
         }
@@ -70,5 +72,9 @@ public class CustomRemoteTokenService implements ResourceServerTokenServices {
             System.out.println(ex.getMessage());
         }
         return null;
+    }
+
+    private String buildCheckTokenUrl(String accessToken) {
+        return oauth_server + "/idp/sso/oauth/check_token?token=" + accessToken;
     }
 }
