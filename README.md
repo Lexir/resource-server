@@ -3,10 +3,20 @@
 Пример простого сервера предоставления ресурсов.
 В данном сервере авторизация заточена конкретно под наш сервер авторизации Oauth2.0 по адресу https://t.trusted.plus
 
+## Install
+1. git clone
+2. IntellIJ IDEA -> open project
+3. mvn clean install
+4. copy war file  **resource-server\target\resource-server-0.0.1-SNAPSHOT.war** to **$JBOSS_HOME\standalone\deployments**
+5. run server:   
+   linux - **$JBOSS_HOME\bin\standalone.sh**;  
+   windows - **$JBOSS_HOME\bin\standalone.bat**;
+
 Обычная схема в/д с сервером ресурсов выглядит так:
 ![oauthScheme](./image/AuthCodeFlowSequenceDiagram-1.png)
 
-Что бы получить доступ доступ в серверу ресурсов необходимо: 
+В нашем случае пока что мы сделаем это вручную с 1-7 шаг.  
+Что бы получить доступ к серверу ресурсов необходимо: 
 1. Зарегистрировать ваше приложение в сервисе t.trusted.plus;  
    Мои приложения -> Нажать плюс в правом нижнем углу -> Выбрать тип приложения -> Заполнить необходимы поля -> 
    Нажать создать -> Перейти в созданное приложение и сохранить куда нить clientId, а так же secret
@@ -27,5 +37,5 @@
       "scope": "userprofile"
    }
    ```
-4. Отправить запрос http://localhost:8096/user/profile  
+4. Отправить запрос http://localhost/resource/user/profile  
    Authorization: **Bearer token** вставить токен, полученный ранее.
