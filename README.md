@@ -23,7 +23,7 @@
 2. Сохранить данные clientId и secret вашего приложения
    
 3. Получить access_token отправив запрос на 
-   https://t.trusted.plus/idp/sso/oauth/token?grant_type=password&username=test&password=qwerty123 где  
+   https://demo.trusted.plus/idp/sso/oauth/token?grant_type=password&username=test&password=qwerty123 где  
    * **username** = логин для входа в ваш личный кабинет t.trusted.plus,  
    * **password** = пароль от личного кабинета t.trusted.plus,  
    * **Authorization**: Basic Auth : **username**=clientId, **password**=secret из пункта 2.
@@ -37,5 +37,5 @@
       "scope": "userprofile"
    }
    ```
-4. Отправить запрос http://localhost/resource/user/profile  
+4. Отправить запрос http://localhost:8082/joke/random
    Authorization: **Bearer token** вставить токен, полученный ранее.
