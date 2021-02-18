@@ -1,48 +1,45 @@
 package dev.salex.resourceserver.config;
 
-import dev.salex.resourceserver.service.CustomRemoteTokenService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.function.client.WebClient;
 
+@EnableWebFlux
 @Configuration
-@EnableResourceServer
-public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+public class ResourceServerConfiguration {
 
-    @Override
-    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.resourceId("resource-server-rest-api").authenticationManager(authenticationManagerBean())
-                .tokenExtractor(new CustomTokenExtractor());
+    @Value("${spring.security.oauth2.resourceserver.opaque.introspection-uri}")
+    private String introspectionUri;
+
+    @Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.resourceserver.opaque.introspection-client-secret}")
+    private String clientSecret;
+
+    @Value("${chuckUri}")
+    private String chuckUri;
+
+    @Bean
+    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        http.httpBasic().disable()
+                .authorizeExchange(exchanges -> exchanges
+                        .anyExchange().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .opaqueToken(token -> token.introspectionUri(this.introspectionUri)
+                        .introspectionClientCredentials(this.clientId, this.clientSecret)));
+        return http.build();
     }
 
     @Bean
-    public ResourceServerTokenServices tokenService() {
-        CustomRemoteTokenService tokenServices = new CustomRemoteTokenService();
-        return tokenServices;
+    WebClient webClient() {
+        WebClient client = WebClient.create(chuckUri);
+        return client;
     }
 
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        OAuth2AuthenticationManager authenticationManager = new OAuth2AuthenticationManager();
-        authenticationManager.setTokenServices(tokenService());
-        return authenticationManager;
-    }
-
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.
-                httpBasic().disable()
-                .anonymous()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/user/**").authenticated()
-                .antMatchers("/public/**").permitAll()
-                .antMatchers("/home/welcome").permitAll();
-    }
 }
