@@ -39,3 +39,5 @@
    ```
 4. Отправить запрос http://localhost:8082/joke/random
    Authorization: **Bearer token** вставить токен, полученный ранее.
+
+5. Получить доступ к REST API документации http://localhost:8082/swagger-ui/index.html
