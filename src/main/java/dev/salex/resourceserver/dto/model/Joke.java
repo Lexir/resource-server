@@ -1,16 +1,25 @@
 package dev.salex.resourceserver.dto.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Joke {
+    @JsonIgnore
     private long id;
-    private String joke;
-    private List<String> categories=new ArrayList<>();
+    @NotEmpty(message = "joke may not be empty")
+    private String jokeText;
+    private List<String> categories = new ArrayList<>();
 
     public Joke(long id, String joke) {
         this.id = id;
-        this.joke = joke;
+        this.jokeText = joke;
+    }
+
+    public Joke(String joke) {
+        this.jokeText = joke;
     }
 
     public Joke() {
@@ -24,12 +33,12 @@ public class Joke {
         this.id = id;
     }
 
-    public String getJoke() {
-        return joke;
+    public String getJokeText() {
+        return jokeText;
     }
 
-    public void setJoke(String joke) {
-        this.joke = joke;
+    public void setJokeText(String jokeText) {
+        this.jokeText = jokeText;
     }
 
     public List<String> getCategories() {

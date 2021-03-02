@@ -3,6 +3,7 @@ package dev.salex.resourceserver.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.reactive.config.EnableWebFlux;
@@ -28,6 +29,13 @@ public class ResourceServerConfiguration {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.httpBasic().disable()
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers(
+                            HttpMethod.GET,
+                            "/v2/api-docs",
+                            "/swagger-resources/**",
+                            "/swagger-ui/**",
+                            "/webjars/**",
+                            "favicon.ico").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
