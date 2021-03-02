@@ -1,7 +1,7 @@
 # resource-server
 
 Пример простого сервера предоставления ресурсов.
-В данном сервере авторизация заточена конкретно под наш сервер авторизации Oauth2.0 по адресу https://t.trusted.plus
+В данном сервере авторизация заточена конкретно под наш сервер авторизации Oauth2.0 по адресу https://demo.trusted.plus
 
 ## Install
 1. git clone
@@ -17,13 +17,13 @@
 
 В нашем случае пока что мы сделаем это вручную с 1-7 шаг.  
 Что бы получить доступ к серверу ресурсов необходимо: 
-1. Зарегистрировать ваше приложение в сервисе t.trusted.plus;  
+1. Зарегистрировать ваше приложение в сервисе demo.trusted.plus;  
    Мои приложения -> Нажать плюс в правом нижнем углу -> Выбрать тип приложения -> Заполнить необходимы поля -> 
    Нажать создать -> Перейти в созданное приложение и сохранить куда нить clientId, а так же secret
 2. Сохранить данные clientId и secret вашего приложения
    
 3. Получить access_token отправив запрос на 
-   https://t.trusted.plus/idp/sso/oauth/token?grant_type=password&username=test&password=qwerty123 где  
+   https://demo.trusted.plus/idp/sso/oauth/token?grant_type=password&username=test&password=qwerty123 где  
    * **username** = логин для входа в ваш личный кабинет t.trusted.plus,  
    * **password** = пароль от личного кабинета t.trusted.plus,  
    * **Authorization**: Basic Auth : **username**=clientId, **password**=secret из пункта 2.
@@ -37,5 +37,5 @@
       "scope": "userprofile"
    }
    ```
-4. Отправить запрос http://localhost/resource/user/profile  
+4. Отправить запрос http://localhost:8082/joke/random
    Authorization: **Bearer token** вставить токен, полученный ранее.
